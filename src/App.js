@@ -24,8 +24,32 @@ class App extends Component {
     values: [], // it contain 2 values if op is not null. Otherwise there is only one value
   }
 
+  componentWillMount(){
+    document.addEventListener("keypress", this.onKeyPress, false);
+   }
+
+  componentWillUnmount() {
+    document.removeEventListener("keypress", this.onKeyPress, false);
+  }
+
+  onKeyPress = (event) => {
+    var charCode = (event.which) ? event.which : event.keyCode
+    console.log(event);
+    if (event.keyCode === 8 || event.keyCode === 46
+      || event.code === "BackSpace") this.onBackSpace(); // backspace
+    if (48 <= charCode && charCode <= 57) { // digits
+      this.onPress(charCode - 48);
+    }
+    if (charCode === 61 || event.keyCode === 13) this.onEqual(); // equal
+    if (charCode === 43) this.onOperation(PLUS);// plus
+    if (charCode === 45) this.onOperation(MINUS);// minus
+    if (charCode === 42) this.onOperation(MULT);// mult
+    if (charCode === 37) this.onOperation(PERCENT);// percent
+  }
+
   onEqual = (callback) => {
     const { operation, values, showValue } = this.state;
+    if (!operation) return;
     const newValue = OP_FUNCTIONS[operation](values[0], showValue);
     this.setState({
       values: [newValue], // supposed to be a stack
@@ -70,6 +94,8 @@ class App extends Component {
     newShowValue = newShowValue.slice(0, newShowValue.length - 1);
     this.setState({ showValue: newShowValue });
   }
+
+
 
   render() {
     const { showValue } = this.state;
