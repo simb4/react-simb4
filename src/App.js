@@ -28,7 +28,7 @@ class App extends Component {
     const { operation, values, showValue } = this.state;
     const newValue = OP_FUNCTIONS[operation](values[0], showValue);
     this.setState({
-      values: [newValue],
+      values: [newValue], // supposed to be a stack
       showValue: newValue,
       operation: null
     }, callback);
@@ -50,10 +50,8 @@ class App extends Component {
         values: [showValue],
       });
     } else {
-      const value = showValue;
-      this.onEqual(() => {
-        const newValue = OP_FUNCTIONS[OP](values[0], value);
-        this.setState({ operation: OP, showValue: OP, values: [newValue] });
+      this.onEqual((result) => {
+        this.setState({ operation: OP, showValue: OP });
       })
     }
   }
